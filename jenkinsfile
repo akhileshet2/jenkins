@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven384'
+    }
+    stages {
+        stage ('Get Source Code') {
+            steps {
+                git credentialsId: '40b358f8-db5a-4c4d-9ee5-1f0be42f16d0', url: 'https://github.com/akhileshet2/addressbook.git'
+            }
+            
+        }
+        stage ('Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+             stage ('Code Scan') {
+            steps {
+                sh 'mvn -P metrics pmd:pmd'
+            }
+            
+        }
+    
+        stage ('Unit Test') {
+            steps {
+                sh 'mvn test'
+            }
+            
+        }
+    
+        stage ('Package') {
+            steps {
+                sh 'mvn package'
+            }
+            
+        }
+    }
+}
